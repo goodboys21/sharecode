@@ -1,28 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>View Shared Code</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>CodeGood || View</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    pre::-webkit-scrollbar {
+      height: 8px;
+    }
+    pre::-webkit-scrollbar-thumb {
+      background-color: #3b82f6;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900 p-10">
-  <div class="max-w-3xl mx-auto">
-    <h1 id="judul" class="text-3xl font-bold mb-4">Loading...</h1>
-    <pre id="kode" class="bg-gray-200 p-4 rounded-lg overflow-auto whitespace-pre-wrap">Fetching code...</pre>
-  </div>
+<body class="bg-[#0f172a] text-white min-h-screen">
+
+  <!-- Top bar -->
+  <header class="bg-[#0f172a] border-b border-[#1e293b] flex items-center gap-2 px-4 py-3">
+    <div class="w-7 h-7 rounded-md bg-gradient-to-br from-[#6366f1] to-[#93c5fd] flex items-center justify-center text-white font-semibold text-lg select-none">
+      C
+    </div>
+    <h1 class="font-extrabold text-lg select-none">CSC</h1>
+  </header>
+
+  <!-- Main card -->
+  <main class="p-6">
+    <section class="bg-[#111827] rounded-xl p-6 max-w-2xl mx-auto shadow-lg">
+      <h2 id="judul" class="text-2xl font-semibold mb-6 select-none">Loading...</h2>
+
+      <div class="flex gap-4 mb-6">
+        <button onclick="copyCode()" class="flex items-center gap-2 px-4 py-2 rounded-md border border-[#374151] text-gray-400 hover:text-white hover:border-[#6366f1] transition select-none">
+          <i class="fas fa-copy"></i>
+          Copy Code
+        </button>
+        <a id="rawLink" target="_blank" class="flex items-center gap-2 px-4 py-2 rounded-md border border-[#374151] text-gray-400 hover:text-white hover:border-[#6366f1] transition select-none">
+          <i class="fas fa-code"></i>
+          Raw
+        </a>
+      </div>
+
+      <div class="bg-[#1e293b] rounded-t-md px-4 py-2 text-xs font-semibold text-gray-500 select-none tracking-wide">
+        CODE
+      </div>
+
+      <pre id="kode" class="bg-[#111827] rounded-b-md p-4 overflow-x-auto text-sm font-mono text-[#94a3b8] leading-relaxed whitespace-pre-wrap">
+Loading...
+      </pre>
+    </section>
+  </main>
 
   <script>
     const id = location.pathname.split('/').pop();
-    fetch(`https://jsonblob.com/api/jsonBlob/${id}`)
+    const judulEl = document.getElementById('judul');
+    const kodeEl = document.getElementById('kode');
+    const rawLink = document.getElementById('rawLink');
+
+    fetch('https://jsonblob.com/api/jsonBlob/' + id)
       .then(res => res.json())
       .then(data => {
-        document.getElementById('judul').textContent = data.title || 'Untitled';
-        document.getElementById('kode').textContent = data.code || '';
+        judulEl.textContent = data.title || "Untitled Code";
+        kodeEl.textContent = data.code || "";
+        rawLink.href = 'https://jsonblob.com/api/jsonBlob/' + id;
       })
       .catch(() => {
-        document.getElementById('judul').textContent = '404 - Code Not Found';
-        document.getElementById('kode').textContent = 'The code snippet you are looking for does not exist.';
+        judulEl.textContent = "404 - Code Not Found";
+        kodeEl.textContent = "This code does not exist or has been deleted.";
+        rawLink.style.display = 'none';
       });
+
+    function copyCode() {
+      const text = kodeEl.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Code copied to clipboard!");
+      }).catch(() => {
+        alert("❌ Failed to copy!");
+      });
+    }
   </script>
+
 </body>
 </html>
