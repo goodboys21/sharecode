@@ -1,14 +1,17 @@
 {
-  "name": "pastebin-clone",
+  "name": "sharecode",
   "version": "1.0.0",
+  "description": "Pastebin clone using JSONBlob and Express.js",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
+  "keywords": ["pastebin", "jsonblob", "express", "vercel"],
+  "author": "Bagus Bahril",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
-    "express": "^4.19.2",
-    "body-parser": "^1.20.2"
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2"
   }
 }
