@@ -1,55 +1,74 @@
-const express = require('express')
-const axios = require('axios')
-const bodyParser = require('body-parser')
-const app = express()
-const PORT = process.env.PORT || 3000
+const express = require('express');
+const axios = require('axios');
+const { nanoid } = require('nanoid'); // opsional kalau mau generate ID sendiri
 
-app.use(bodyParser.json())
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const BLOB_URL = 'http://jsonblob.com/api/jsonBlob/1400708501327765504'
+app.use(express.json());
+app.use(express.static('public'));
 
+function escapeHTML(str) {
+  return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+}
+
+// ✅ CREATE paste
 app.post('/api/create', async (req, res) => {
-  const { title, language, code } = req.body
-  if (!title || !language || !code) {
-    return res.status(400).json({ message: 'Missing fields' })
-  }
-
-  const id = Math.random().toString(36).slice(2, 10)
-  const data = {
-    id,
-    title,
-    language,
-    code,
-    created_at: new Date().toISOString()
-  }
+  const { name, code } = req.body;
+  if (!name || !code) return res.status(400).json({ error: 'Name and code required' });
 
   try {
-    const response = await axios.get(BLOB_URL)
-    const allData = response.data
-    allData[id] = data
+    const response = await axios.post('https://jsonblob.com/api/jsonBlob', { name, code }, {
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-    await axios.put(BLOB_URL, allData)
+    const location = response.headers.location; // e.g. https://jsonblob.com/api/jsonBlob/xxxxxxxx
+    const id = location.split('/').pop();
 
-    return res.json({ success: true, id, url: `/${id}` })
+    res.json({ id }); // You can change to { url: `/view/${id}` } if you prefer
   } catch (err) {
-    return res.status(500).json({ message: 'Failed to save', error: err.message })
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create JSONBlob' });
   }
-})
+});
 
-// optional view endpoint
-app.get('/api/view/:id', async (req, res) => {
-  const id = req.params.id
+// ✅ VIEW paste
+app.get('/view/:id', async (req, res) => {
+  const id = req.params.id;
+
   try {
-    const response = await axios.get(BLOB_URL)
-    const data = response.data[id]
-    if (!data) return res.status(404).json({ message: 'Not found' })
+    const jsonUrl = `https://jsonblob.com/api/jsonBlob/${id}`;
+    const response = await axios.get(jsonUrl);
+    const { name, code } = response.data;
 
-    res.json(data)
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>${name} - ShareCode</title>
+        <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet"/>
+        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+        <style>
+          body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+          pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow: auto; }
+        </style>
+      </head>
+      <body>
+        <h1>${name}</h1>
+        <pre><code class="language-javascript">${escapeHTML(code)}</code></pre>
+        <p><a href="/">← Back to ShareCode</a></p>
+      </body>
+      </html>
+    `);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch', error: err.message })
+    console.error(err);
+    res.status(404).send('<h1>404 Not Found</h1><p>Code not found or cannot be loaded.</p>');
   }
-})
+});
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
