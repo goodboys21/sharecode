@@ -3,7 +3,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
-   ShareCode - Modern Code Sharing
+   CG || Code Sharing
   </title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
@@ -22,39 +22,38 @@
     }
   </style>
  </head>
- <body class="bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col p-6 transition-colors duration-500">
-  <header class="flex justify-end items-center space-x-4 mb-6">
-   <button id="themeToggle" aria-label="Toggle theme" class="flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500">
-    <i class="fas fa-moon" id="themeIcon"></i>
-    <span id="themeText">Dark Mode</span>
-   </button>
-   <img alt="ShareCode logo, stylized SC letters in blue square" class="rounded-lg shadow-md w-16 h-16 object-cover" height="64" src="https://storage.googleapis.com/a1aa/image/d3e994ab-de55-4811-c1ff-d930a2673a5b.jpg" width="64"/>
+ <body class="bg-gray-900 min-h-screen flex flex-col p-6 transition-colors duration-500 text-gray-100">
+  <header class="flex justify-start items-center mb-6 space-x-4">
+   <img alt="logo jawa" class="rounded-lg shadow-md w-16 h-16 object-cover" height="64" src="https://cloudgood.xyz/file/KsG8bq7.png" width="64"/>
+   <h1 class="text-3xl font-extrabold tracking-tight select-none">
+    CodeGood
+   </h1>
   </header>
-  <main class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 sm:p-12 md:p-16 transition-colors duration-500 mx-auto flex-grow">
+  <main class="w-full max-w-3xl bg-gray-800 rounded-2xl shadow-lg p-10 sm:p-12 md:p-16 transition-colors duration-500 mx-auto flex-grow">
    <header class="mb-10 text-center">
-    <h1 class="text-4xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
+    <h1 class="text-4xl font-extrabold tracking-tight">
      Share Your Code
     </h1>
-    <p class="mt-2 text-gray-600 dark:text-gray-300 max-w-md mx-auto">
+    <p class="mt-2 max-w-md mx-auto text-gray-300">
      Quickly create sharable links for your code snippets with syntax highlighting support.
     </p>
    </header>
    <form autocomplete="off" class="space-y-8" id="pasteForm" novalidate="" spellcheck="false">
     <div>
-     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="name">
+     <label class="block text-sm font-semibold mb-2" for="name">
       Feature Name
      </label>
-     <input aria-describedby="name-desc" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" id="name" maxlength="100" name="name" placeholder="Enter feature name" required="" type="text"/>
-     <p class="mt-1 text-xs text-gray-400 dark:text-gray-500" id="name-desc">
+     <input aria-describedby="name-desc" class="w-full rounded-lg border border-gray-600 bg-gray-700 px-4 py-3 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" id="name" maxlength="100" name="name" placeholder="Enter feature name" required="" type="text"/>
+     <p class="mt-1 text-xs text-gray-400" id="name-desc">
       Give your code snippet a descriptive name.
      </p>
     </div>
     <div>
-     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2" for="code">
+     <label class="block text-sm font-semibold mb-2" for="code">
       Code Snippet
      </label>
-     <textarea aria-describedby="code-desc" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-3 font-mono text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-y" id="code" name="code" placeholder="Paste your code here..." required="" rows="12"></textarea>
-     <p class="mt-1 text-xs text-gray-400 dark:text-gray-500" id="code-desc">
+     <textarea aria-describedby="code-desc" class="w-full rounded-lg border border-gray-600 bg-gray-700 px-4 py-3 font-mono text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-y" id="code" name="code" placeholder="Paste your code here..." required="" rows="12"></textarea>
+     <p class="mt-1 text-xs text-gray-400" id="code-desc">
       Make sure your code is properly formatted before submitting.
      </p>
     </div>
@@ -64,62 +63,20 @@
      Create Link
     </button>
    </form>
-   <section class="mt-10 text-center font-medium break-words" id="result"></section>
+   <section class="mt-10 text-center font-medium break-words text-blue-500" id="result"></section>
   </main>
-  <footer class="mt-12 text-center text-gray-500 dark:text-gray-400 text-sm select-none">
-   © 2024 ShareCode. All rights reserved.
+  <footer class="mt-12 text-center text-gray-400 text-sm select-none">
+   © 2025 CodeGood. All rights reserved.
   </footer>
   <script>
-   // Theme toggle logic
-   const themeToggle = document.getElementById('themeToggle');
-   const themeIcon = document.getElementById('themeIcon');
-   const themeText = document.getElementById('themeText');
    const result = document.getElementById('result');
    const form = document.getElementById('pasteForm');
-
-   // Initialize theme from localStorage or system preference
-   function setTheme(theme) {
-     if (theme === 'dark') {
-       document.documentElement.classList.add('dark');
-       themeIcon.classList.remove('fa-sun');
-       themeIcon.classList.add('fa-moon');
-       themeText.textContent = 'Dark Mode';
-       themeToggle.setAttribute('aria-label', 'Switch to light mode');
-     } else {
-       document.documentElement.classList.remove('dark');
-       themeIcon.classList.remove('fa-moon');
-       themeIcon.classList.add('fa-sun');
-       themeText.textContent = 'Light Mode';
-       themeToggle.setAttribute('aria-label', 'Switch to dark mode');
-     }
-   }
-
-   function getPreferredTheme() {
-     if (localStorage.getItem('theme')) {
-       return localStorage.getItem('theme');
-     }
-     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-       return 'dark';
-     }
-     return 'light';
-   }
-
-   let currentTheme = getPreferredTheme();
-   setTheme(currentTheme);
-
-   themeToggle.addEventListener('click', () => {
-     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-     localStorage.setItem('theme', currentTheme);
-     setTheme(currentTheme);
-   });
 
    form.addEventListener('submit', async (e) => {
      e.preventDefault();
      result.textContent = '';
      const formData = new FormData(form);
      const data = Object.fromEntries(formData);
-
-     // Removed language validation since language select is removed
 
      try {
        const response = await fetch('/api/create', {
@@ -135,18 +92,18 @@
        const json = await response.json();
 
        result.innerHTML = `
-         <p class="mb-2 ${currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">Your code link is ready:</p>
-         <a href="/view/${json.id}" target="_blank" rel="noopener noreferrer" class="inline-block text-blue-600 dark:text-blue-400 underline break-all hover:text-blue-800 dark:hover:text-blue-300 transition">
+         <p class="mb-2 text-gray-300">Your code link is ready:</p>
+         <a href="/view/${json.id}" target="_blank" rel="noopener noreferrer" class="inline-block text-blue-400 underline break-all hover:text-blue-300 transition">
            ${location.origin}/view/${json.id}
          </a>
        `;
        result.classList.remove('text-red-600', 'dark:text-red-500');
-       result.classList.add('text-blue-700', 'dark:text-blue-500');
+       result.classList.add('text-blue-400');
        form.reset();
      } catch (error) {
        result.textContent = `Failed to create link: ${error.message}`;
-       result.classList.remove('text-blue-700', 'dark:text-blue-500');
-       result.classList.add('text-red-600', 'dark:text-red-500');
+       result.classList.remove('text-blue-400');
+       result.classList.add('text-red-600');
      }
    });
   </script>
