@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Shared Code</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 p-10">
+  <div class="max-w-3xl mx-auto">
+    <h1 id="judul" class="text-3xl font-bold mb-4">Loading...</h1>
+    <pre id="kode" class="bg-gray-200 p-4 rounded-lg overflow-auto whitespace-pre-wrap">Fetching code...</pre>
+  </div>
+
+  <script>
+    const id = location.pathname.split('/').pop();
+    fetch(`https://jsonblob.com/api/jsonBlob/${id}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('judul').textContent = data.title || 'Untitled';
+        document.getElementById('kode').textContent = data.code || '';
+      })
+      .catch(() => {
+        document.getElementById('judul').textContent = '404 - Code Not Found';
+        document.getElementById('kode').textContent = 'The code snippet you are looking for does not exist.';
+      });
+  </script>
+</body>
+</html>
