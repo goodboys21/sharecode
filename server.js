@@ -1,74 +1,55 @@
-const express = require('express');
-const { v4: uuidv4 } = require('uuid');
-const axios = require('axios');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const express = require('express')
+const axios = require('axios')
+const bodyParser = require('body-parser')
+const app = express()
+const PORT = process.env.PORT || 3000
 
-const JSONBLOB_URL = 'http://jsonblob.com/api/jsonBlob/1400708501327765504';
+app.use(bodyParser.json())
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+const BLOB_URL = 'http://jsonblob.com/api/jsonBlob/1400708501327765504'
 
-// Fetch all shared codes
-const fetchCodes = async () => {
-  try {
-    const res = await axios.get(JSONBLOB_URL);
-    return res.data || {};
-  } catch (err) {
-    console.error('Failed to fetch data:', err.message);
-    return {};
-  }
-};
-
-// Update blob with new data
-const updateCodes = async (data) => {
-  try {
-    await axios.put(JSONBLOB_URL, data, {
-      headers: { 'Content-Type': 'application/json' }
-    });
-  } catch (err) {
-    console.error('Failed to update blob:', err.message);
-  }
-};
-
-// Homepage
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
-
-// Create code
 app.post('/api/create', async (req, res) => {
-  const { title, content, language } = req.body;
-  if (!content) return res.status(400).json({ error: 'Code content required!' });
+  const { title, language, code } = req.body
+  if (!title || !language || !code) {
+    return res.status(400).json({ message: 'Missing fields' })
+  }
 
-  const id = uuidv4().slice(0, 6);
-  const existing = await fetchCodes();
-
-  existing[id] = {
+  const id = Math.random().toString(36).slice(2, 10)
+  const data = {
     id,
-    title: title || 'Untitled',
-    content,
-    language: language || 'plaintext',
-    createdAt: new Date().toISOString()
-  };
+    title,
+    language,
+    code,
+    created_at: new Date().toISOString()
+  }
 
-  await updateCodes(existing);
+  try {
+    const response = await axios.get(BLOB_URL)
+    const allData = response.data
+    allData[id] = data
 
-  res.json({ id });
-});
+    await axios.put(BLOB_URL, allData)
 
-// View code
-app.get('/:id', async (req, res) => {
-  res.sendFile(__dirname + '/public/id.html');
-});
+    return res.json({ success: true, id, url: `/${id}` })
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed to save', error: err.message })
+  }
+})
 
-// Get code data for front-end
-app.get('/api/code/:id', async (req, res) => {
-  const data = await fetchCodes();
-  const code = data[req.params.id];
-  if (!code) return res.status(404).json({ error: 'Code not found' });
-  res.json(code);
-});
+// optional view endpoint
+app.get('/api/view/:id', async (req, res) => {
+  const id = req.params.id
+  try {
+    const response = await axios.get(BLOB_URL)
+    const data = response.data[id]
+    if (!data) return res.status(404).json({ message: 'Not found' })
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch', error: err.message })
+  }
+})
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
